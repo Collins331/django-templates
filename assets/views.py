@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Member, Enquiry
 
 
 # Create your views here.
@@ -19,6 +21,7 @@ def services(request):
 
 
 def contact(request):
+
     return render(request, 'contact.html', {'tab': 'contact'})
 
 
@@ -36,3 +39,27 @@ def checkout(request):
 
 def thankyou(request):
     return render(request, 'thankyou.html')
+
+
+def subscribe(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+
+        member = Member(name=name, email=email)
+        member.save()
+        messages.success(request, "You have subcribed successfully")
+        return redirect("assets:cart")
+
+
+def enquiry(request):
+    if request.method == 'POST':
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        msg = Enquiry(firstname=firstname, lastname=lastname, email=email, message=message)
+        msg.save()
+        messages.success(request, 'Message sent Successfully')
+        return redirect("assets:home")
